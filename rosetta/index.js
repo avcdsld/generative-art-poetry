@@ -1,4 +1,3 @@
-
 const canvas0 = document.createElement('canvas');
 canvas0.id = 'canvas0';
 canvas0.style.display = 'none';
@@ -12,7 +11,6 @@ container.id = 'container';
 document.body.appendChild(container);
 container.appendChild(canvas0);
 container.appendChild(canvas2);
-
 
 const canvas = canvas0;
 const ctx = canvas.getContext('2d');
@@ -71,6 +69,7 @@ let poems = [
     ['土', 'tsuchi', 'Soil'],
     ['悦', 'etsu', 'Joy'],
 ];
+
 poems = poems.concat(poems.map(poem => poem.slice().reverse()));
 //const seed = 12345678;
 const seed = random(0, 100000000);
@@ -84,6 +83,7 @@ const poemParams = {
     rotationMultiplier: 1 / 100,
     lightColorNum: 0, // 0: white, 1: sakura, 2: shinbashi, 3: wakakusa
 };
+
 let randomOffset = 0;
 
 function seedRandom(seed) {
