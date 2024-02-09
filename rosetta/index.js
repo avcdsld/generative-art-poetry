@@ -15,6 +15,9 @@ container.appendChild(canvas2);
 const canvas = canvas0;
 const ctx = canvas.getContext('2d');
 
+const canvasSize = 2000;
+const canvasScale = canvasSize / 1000;
+
 let poems = [
     ['愛', 'ai', 'Love'],
     ['夢', 'yume', 'Dream'],
@@ -112,14 +115,19 @@ function draw() {
     }
 
     poemParams.divisionNum = Math.ceil(random(7, 20));
-    poemParams.translationMultiplier = poemParams.divisionNum < 10 ? 0.5
-        : poemParams.divisionNum < 12 ? random(0.5, 1.0)
-        : poemParams.divisionNum < 14 ? random(0.2, 0.9)
-        : poemParams.divisionNum < 16 ? random(0.3, 0.8)
-        : random(0.3, 0.6);
+    // poemParams.translationMultiplier = poemParams.divisionNum < 10 ? 0.5
+    //     : poemParams.divisionNum < 12 ? random(0.5, 1.0)
+    //     : poemParams.divisionNum < 14 ? random(0.2, 0.9)
+    //     : poemParams.divisionNum < 16 ? random(0.3, 0.8)
+    //     : random(0.3, 0.6);
+    poemParams.translationMultiplier = poemParams.divisionNum < 10 ? 1.0 * canvasScale
+        : poemParams.divisionNum < 12 ? 1.2 * canvasScale
+        : poemParams.divisionNum < 14 ? 1.3 * canvasScale
+        : poemParams.divisionNum < 16 ? 1.4 * canvasScale
+        : 1.5 * canvasScale;
 
-    canvas.width = 500;
-    canvas.height = 500;
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawStone(ctx, 0, 0, canvas.width, canvas.height);
 
@@ -148,7 +156,7 @@ function drawStone(ctx, x, y, w, h) {
     offscreenCtx.putImageData(stoneImg, 0, 0);
 
     offscreenCtx.fillStyle = ctx.createLinearGradient(0, 0, w, h);
-    offscreenCtx.fillStyle.addColorStop(0.01, 'transparent');
+    offscreenCtx.fillStyle.addColorStop(0.01, 'black');
     offscreenCtx.fillStyle.addColorStop(0.95, 'black');
     offscreenCtx.globalCompositeOperation = "destination-in";
     offscreenCtx.fillRect(0, 0, w, h);
@@ -156,24 +164,24 @@ function drawStone(ctx, x, y, w, h) {
     offscreenCtx.fillRect(0, 0, w, h); 
     ctx.drawImage(offscreenCanvas, x, y);
 
-    ctx.globalCompositeOperation = "source-atop";
+    //ctx.globalCompositeOperation = "source-atop";
 
     fillStone(ctx, x, y, w, h);
 
     addEngravedText(ctx, x, y, w, h);
 
-    ctx.filter = 'blur(5px)';
+    ctx.filter = `blur(${Math.floor(1 * canvasScale)}px)`;
     ctx.globalCompositeOperation = "source-over";
     ctx.drawImage(canvas, x, y);
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-    const shadowOffset = 1;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    const shadowOffset = 2 * canvasScale;
     ctx.fillRect(x + shadowOffset, y + shadowOffset, w, h);
 }
 
 function fillStone(ctx, x, y, w, h) {
     ctx.rect(x, y, w, h);
-    ctx.fillStyle = '#8B7B8B';
+    ctx.fillStyle = '#7d6e7d';
     ctx.fill();
 }
 
@@ -184,30 +192,22 @@ function addEngravedText(ctx, x, y, w, h) {
     const wordBottom = poem[2];
 
     ctx.shadowColor = 'white';
-    ctx.shadowBlur = 1;
-    ctx.shadowOffsetX = -1;
-    ctx.shadowOffsetY = 1;
+    ctx.shadowBlur = 2 * canvasScale;
+    ctx.shadowOffsetX = -2 * canvasScale;
+    ctx.shadowOffsetY = 2 * canvasScale;
 
     const textX = x + w / 2;
     const textY = y + h / 2;
     ctx.fillStyle = '#222';
     ctx.textAlign = 'center';
-    // ctx.font = "140px 'Noto Serif JP'";
-    // ctx.fillText(wordTop, textX, textY - 100);
-    drawTextWithAdaptiveSize(ctx, wordTop, textX, textY - 100, 140, canvas.width - canvas.width / 10);
+    drawTextWithAdaptiveSize(ctx, wordTop, textX, textY - (200 * canvasScale), 280 * canvasScale, w - 20 * canvasScale);
+    drawTextWithAdaptiveSize(ctx, wordMiddle, textX, textY + 40 * canvasScale, 180 * canvasScale, w - 20 * canvasScale);
+    drawTextWithAdaptiveSize(ctx, wordBottom, textX, textY + 400 * canvasScale, 280 * canvasScale, w - 20 * canvasScale);
 
-    // ctx.font = "90px 'Noto Serif JP'";
-    // ctx.fillText(wordMiddle, textX, textY + 15);
-    drawTextWithAdaptiveSize(ctx, wordMiddle, textX, textY + 15, 90, canvas.width - canvas.width / 10);
-    
-    // ctx.font = "140px 'Noto Serif JP'";
-    // ctx.fillText(wordBottom, textX, textY + 180);
-    drawTextWithAdaptiveSize(ctx, wordBottom, textX, textY + 180, 140, canvas.width - canvas.width / 10);
-
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 5;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
+    // ctx.shadowColor = 'transparent';
+    // ctx.shadowBlur = 5;
+    // ctx.shadowOffsetX = 0;
+    // ctx.shadowOffsetY = 0;
 }
 
 function drawTextWithAdaptiveSize(ctx, text, posX, posY, defaultFontSize, maxWidth) {
@@ -255,12 +255,15 @@ function drawSchotterStyle(sourceCanvasId, targetCanvasId) {
             tgtCtx.translate(cx + squareSize / 2, cy + squareSize / 2);
             const rotation = j * rotationMultiplier * random(-Math.PI, Math.PI);
             tgtCtx.rotate(rotation);
-            drawRaggedEdgeSquare(tgtCtx, 0, 0, squareSize, i, j, columns, rows);
+
+            // drawRaggedEdgeSquare(tgtCtx, 0, 0, squareSize);
+            // drawRaggedEdgeSquare(tgtCtx, -squareSize / 2, -squareSize / 2, squareSize);
+            // tgtCtx.clip();
             
-            tgtCtx.shadowBlur = 12;
-            tgtCtx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-            tgtCtx.shadowOffsetX = 0;
-            tgtCtx.shadowOffsetY = 0;
+            tgtCtx.shadowBlur = 30 * canvasScale;
+            tgtCtx.shadowColor = 'rgba(20, 20, 20, 0.7)';
+            tgtCtx.shadowOffsetX = -4;
+            tgtCtx.shadowOffsetY = 10;
 
             tgtCtx.drawImage(sourceCanvas, (i - 1) * squareSize, (j - 1) * squareSize, squareSize, squareSize, -squareSize / 2, -squareSize / 2, squareSize, squareSize);
             tgtCtx.restore();
@@ -273,38 +276,47 @@ function random(min, max) {
     return $fx.rand() * (max - min) + min;
 }
 
-function drawRaggedEdgeSquare(ctx, x, y, squareSize, i, j, columns, rows) {
+function drawRaggedEdgeSquare(ctx, x, y, squareSize) {
     ctx.beginPath();
-    const edgeVariance = 30;
-    const stepsPerSide = 60;
+    const edgeVariance = 2; // Variousness of the ragged edge
+    const stepsPerSide = 60; // Number of steps to draw the ragged edge
 
-    for (let step = 0; step <= stepsPerSide; step++) {
-        // Upper edge
-        let offsetX = (squareSize / stepsPerSide) * step;
-        let offsetY = 0;
-        let variance = random(-edgeVariance / 2, edgeVariance / 2);
-        ctx.lineTo(x - squareSize / 2 + offsetX, y - squareSize / 2 + offsetY + variance);
+    ctx.strokeStyle = '#534953'; // Stone color
+    ctx.lineWidth = 1;
 
-        // Right edge
-        offsetX = squareSize;
-        offsetY = (squareSize / stepsPerSide) * step;
-        variance = random(-edgeVariance / 2, edgeVariance / 2);
-        ctx.lineTo(x - squareSize / 2 + offsetX + variance, y - squareSize / 2 + offsetY);
+    for (let side = 0; side < 4; side++) {
+        for (let step = 0; step < stepsPerSide; step++) {
+            let pointX, pointY;
 
-        // Bottom edge
-        offsetX = squareSize - (squareSize / stepsPerSide) * step;
-        offsetY = squareSize;
-        variance = random(-edgeVariance / 2, edgeVariance / 2);
-        ctx.lineTo(x - squareSize / 2 + offsetX, y - squareSize / 2 + offsetY + variance);
+            switch (side) {
+                case 0: // Upper edge
+                    pointX = x + (squareSize / stepsPerSide) * step;
+                    pointY = y + random(-edgeVariance / 2, edgeVariance / 2);
+                    break;
+                case 1: // Right edge
+                    pointX = x + squareSize + random(-edgeVariance / 2, edgeVariance / 2);
+                    pointY = y + (squareSize / stepsPerSide) * step;
+                    break;
+                case 2: // Bottom edge
+                    pointX = x + squareSize - (squareSize / stepsPerSide) * step;
+                    pointY = y + squareSize + random(-edgeVariance / 2, edgeVariance / 2);
+                    break;
+                case 3: // Left edge
+                    pointX = x + random(-edgeVariance / 2, edgeVariance / 2);
+                    pointY = y + squareSize - (squareSize / stepsPerSide) * step;
+                    break;
+            }
 
-        // Left edge
-        offsetX = 0;
-        offsetY = squareSize - (squareSize / stepsPerSide) * step;
-        variance = random(-edgeVariance / 2, edgeVariance / 2);
-        ctx.lineTo(x - squareSize / 2 + offsetX + variance, y - squareSize / 2 + offsetY);
+            if (side === 0 && step === 0) {
+                ctx.moveTo(pointX, pointY);
+            } else {
+                ctx.lineTo(pointX, pointY);
+            }
+        }
     }
+
     ctx.closePath();
-    ctx.clip();
+    ctx.stroke(); // ギザギザの線を描画
 }
 
 let lightPositions = [];
@@ -314,7 +326,7 @@ function addSearchlightEffect(canvasId) {
     const ctx = canvas.getContext('2d');
 
     function drawSearchlight(x, y) {
-        const radius = 150;
+        const radius = 300 * canvasScale;
         const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
 
         //const colorNum = Math.floor(random(0, 4));
