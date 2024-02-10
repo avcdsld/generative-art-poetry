@@ -19,63 +19,42 @@ const canvasSize = 2000;
 const canvasScale = canvasSize / 1000;
 
 let poems = [
-    ['愛', 'ai', 'Love'],
-    ['夢', 'yume', 'Dream'],
-    ['美', 'bi', 'Beauty'],
-    ['心', 'kokoro', 'Heart'],
-    ['縁', 'en', 'Fate'],
-    ['笑', 'emi', 'Smile'],
-    ['道', 'michi', 'Way'],
-    ['情', 'nasake', 'Mercy'],
-    ['志', 'kokorozashi', 'Aspiration'],
-    ['熱', 'netsu', 'Hot'],
-    ['友', 'tomo', 'Friend'],
-    ['知', 'chi', 'Knowledge'],
-    ['星', 'hoshi', 'Star'],
-    ['海', 'umi', 'Sea'],
-    ['水', 'mizu', 'Water'],
-    ['空', 'sora', 'Sky'],
-    ['日', 'hi', 'Sun'],
+    ['花', 'hana', 'Flower'],
+    ['君', 'kimi', 'You'],
     ['光', 'hikari', 'Light'],
-    ['木', 'ki', 'Tree'],
-    ['声', 'koe', 'Voice'],
-    ['歌', 'uta', 'Song'],
-    ['鍵', 'kagi', 'Key'],
-    ['米', 'kome', 'Rice'],
-    ['魚', 'sakana', 'Fish'],
-    ['月', 'tsuki', 'Moon'],
-    ['命', 'inochi', 'Life'],
-    ['桜', 'sakura', 'Sakura'],
-    ['虹', 'niji', 'Rainbow'],
-    ['恵', 'megumi', 'Blessing'],
-    ['本', 'hon', 'Book'],
-    ['靴', 'kutsu', 'Shoes'],
-    ['家', 'ie', 'House'],
-    ['飯', 'meshi', 'Meal'],
-    ['雨', 'ame', 'Rain'],
-    ['恩', 'on', 'Obligation'],
-    ['念', 'nen', 'Sense'],
-    ['憩', 'ikoi', 'Rest'],
-    ['憧', 'akogare', 'Yearning'],
     ['人', 'hito', 'Human'],
-    ['詩', 'shi', 'Poem'],
-    ['師', 'shi', 'Teacher'],
-    ['森', 'mori', 'Forest'],
-    ['和', 'wa', 'Harmony'],
-    ['涙', 'namida', 'Tear'],
-    ['望', 'nozomi', 'Hope'],
-    ['誉', 'homare', 'Honor'],
-    ['名', 'na', 'Name'],
+    ['桜', 'sakura', 'Cherry blossom'],
+    ['霞', 'kasumi', 'Haze'],
     ['春', 'haru', 'Spring'],
-    ['柱', 'hashira', 'Pillar'],
-    ['朝', 'asa', 'Morning'],
-    ['土', 'tsuchi', 'Soil'],
-    ['悦', 'etsu', 'Joy'],
+    ['雲', 'kumo', 'Cloud'],
+    ['時鳥', 'hototogisu', 'Little cuckoo'],
+    ['風', 'kaze', 'Breeze'],
+    ['露', 'tsuyu', 'Dew'],
+    ['聲', 'koe', 'Voice'],
+    ['水', 'mizu', 'Water'],
+    ['嵐', 'arashi', 'Storm'],
+    ['月', 'tsuki', 'Moon'],
+    ['心', 'kokoro', 'Mind'],
+    ['紅葉', 'momiji', 'Maple'],
+    ['玉', 'tama', 'Pearl'],
+    ['八重葎', 'yaemugura', 'Wild grass'],
+    ['錦', 'nishiki', 'Brocade'],
+    ['宿', 'yado', 'House'],
+    ['夕', 'yū', 'Evening'],
+    ['影', 'kage', 'Light'],
+    ['霧', 'kiri', 'Mist'],
+    ['霜夜', 'shimoyo', 'Frosty night'],
+    ['古里', 'furusato', 'Old capital'],
+    ['雪', 'yuki', 'Snow'],
+    ['霜', 'simo', 'Star'],
+    ['冬', 'fuyu', 'Winter'],
+    ['里', 'sato', 'Hometown'],
+    ['網代木', 'ajiroki', 'Wickerwork trap'],
+    ['夜', 'yo', 'Night'],
 ];
-
-poems = poems.concat(poems.map(poem => poem.slice().reverse()));
-//const seed = 12345678;
-const seed = random(0, 100000000);
+// poems = poems.concat(poems.map(poem => poem.slice().reverse()));
+const seed = 5_7_5_7_7;
+// const seed = random(0, 100000000);
 const shuffledPoems = shuffleArray([...poems], seed);
 const font = new FontFace('Noto Serif JP', 'url(NotoSerifJP-Regular.otf)');
 
@@ -114,12 +93,7 @@ function draw() {
         $fx.rand();
     }
 
-    poemParams.divisionNum = Math.ceil(random(7, 20));
-    // poemParams.translationMultiplier = poemParams.divisionNum < 10 ? 0.5
-    //     : poemParams.divisionNum < 12 ? random(0.5, 1.0)
-    //     : poemParams.divisionNum < 14 ? random(0.2, 0.9)
-    //     : poemParams.divisionNum < 16 ? random(0.3, 0.8)
-    //     : random(0.3, 0.6);
+    poemParams.divisionNum = Math.ceil(random(7, 18));
     poemParams.translationMultiplier = poemParams.divisionNum < 10 ? 1.0 * canvasScale
         : poemParams.divisionNum < 12 ? 1.2 * canvasScale
         : poemParams.divisionNum < 14 ? 1.3 * canvasScale
@@ -164,8 +138,6 @@ function drawStone(ctx, x, y, w, h) {
     offscreenCtx.fillRect(0, 0, w, h); 
     ctx.drawImage(offscreenCanvas, x, y);
 
-    //ctx.globalCompositeOperation = "source-atop";
-
     fillStone(ctx, x, y, w, h);
 
     addEngravedText(ctx, x, y, w, h);
@@ -203,11 +175,6 @@ function addEngravedText(ctx, x, y, w, h) {
     drawTextWithAdaptiveSize(ctx, wordTop, textX, textY - (200 * canvasScale), 280 * canvasScale, w - 20 * canvasScale);
     drawTextWithAdaptiveSize(ctx, wordMiddle, textX, textY + 40 * canvasScale, 180 * canvasScale, w - 20 * canvasScale);
     drawTextWithAdaptiveSize(ctx, wordBottom, textX, textY + 400 * canvasScale, 280 * canvasScale, w - 20 * canvasScale);
-
-    // ctx.shadowColor = 'transparent';
-    // ctx.shadowBlur = 5;
-    // ctx.shadowOffsetX = 0;
-    // ctx.shadowOffsetY = 0;
 }
 
 function drawTextWithAdaptiveSize(ctx, text, posX, posY, defaultFontSize, maxWidth) {
@@ -256,7 +223,6 @@ function drawSchotterStyle(sourceCanvasId, targetCanvasId) {
             const rotation = j * rotationMultiplier * random(-Math.PI, Math.PI);
             tgtCtx.rotate(rotation);
 
-            // drawRaggedEdgeSquare(tgtCtx, 0, 0, squareSize);
             // drawRaggedEdgeSquare(tgtCtx, -squareSize / 2, -squareSize / 2, squareSize);
             // tgtCtx.clip();
             
@@ -316,7 +282,7 @@ function drawRaggedEdgeSquare(ctx, x, y, squareSize) {
     }
 
     ctx.closePath();
-    ctx.stroke(); // ギザギザの線を描画
+    ctx.stroke();
 }
 
 let lightPositions = [];
@@ -329,7 +295,7 @@ function addSearchlightEffect(canvasId) {
         const radius = 300 * canvasScale;
         const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
 
-        //const colorNum = Math.floor(random(0, 4));
+        // const colorNum = Math.floor(random(0, 4));
         const colorNum = poemParams.lightColorNum;
         if (colorNum === 0) {
             // White
