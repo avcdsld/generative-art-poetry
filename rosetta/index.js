@@ -1,24 +1,22 @@
 const canvas0 = document.createElement('canvas');
+const ctx = canvas0.getContext('2d');
 canvas0.id = 'canvas0';
 canvas0.style.display = 'none';
 
-const canvas2 = document.createElement('canvas');
-canvas2.id = 'canvas2';
+const canvas = document.createElement('canvas');
+canvas.id = 'canvas';
 
 const container = document.createElement('div');
 container.id = 'container';
 
 document.body.appendChild(container);
 container.appendChild(canvas0);
-container.appendChild(canvas2);
-
-const canvas = canvas0;
-const ctx = canvas.getContext('2d');
+container.appendChild(canvas);
 
 const canvasSize = 2000;
 const canvasScale = canvasSize / 1000;
 
-let poems = [
+const poems = [
     ['花', 'hana', 'Flower'],
     ['君', 'kimi', 'You'],
     ['光', 'hikari', 'Light'],
@@ -52,9 +50,7 @@ let poems = [
     ['網代木', 'ajiroki', 'Wickerwork trap'],
     ['夜', 'yo', 'Night'],
 ];
-// poems = poems.concat(poems.map(poem => poem.slice().reverse()));
 const seed = 5_7_5_7_7;
-// const seed = random(0, 100000000);
 const shuffledPoems = shuffleArray([...poems], seed);
 const font = new FontFace('Noto Serif JP', 'url(NotoSerifJP-Regular.otf)');
 
@@ -100,13 +96,13 @@ function draw() {
         : poemParams.divisionNum < 16 ? 1.4 * canvasScale
         : 1.5 * canvasScale;
 
-    canvas.width = canvasSize;
-    canvas.height = canvasSize;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawStone(ctx, 0, 0, canvas.width, canvas.height);
+    canvas0.width = canvasSize;
+    canvas0.height = canvasSize;
+    ctx.clearRect(0, 0, canvas0.width, canvas0.height);
+    drawStone(ctx, 0, 0, canvas0.width, canvas0.height);
 
-    drawSchotterStyle('canvas0', 'canvas2');
-    addSearchlightEffect('canvas2');
+    drawSchotterStyle('canvas0', 'canvas');
+    addSearchlightEffect('canvas');
 
     $fx.preview();
 }
@@ -144,7 +140,7 @@ function drawStone(ctx, x, y, w, h) {
 
     ctx.filter = `blur(${Math.floor(1 * canvasScale)}px)`;
     ctx.globalCompositeOperation = "source-over";
-    ctx.drawImage(canvas, x, y);
+    ctx.drawImage(canvas0, x, y);
 
     ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     const shadowOffset = 2 * canvasScale;
@@ -222,9 +218,6 @@ function drawSchotterStyle(sourceCanvasId, targetCanvasId) {
             tgtCtx.translate(cx + squareSize / 2, cy + squareSize / 2);
             const rotation = j * rotationMultiplier * random(-Math.PI, Math.PI);
             tgtCtx.rotate(rotation);
-
-            // drawRaggedEdgeSquare(tgtCtx, -squareSize / 2, -squareSize / 2, squareSize);
-            // tgtCtx.clip();
             
             tgtCtx.shadowBlur = 30 * canvasScale;
             tgtCtx.shadowColor = 'rgba(20, 20, 20, 0.7)';
@@ -238,51 +231,7 @@ function drawSchotterStyle(sourceCanvasId, targetCanvasId) {
 }
 
 function random(min, max) {
-    // return Math.random() * (max - min) + min;
     return $fx.rand() * (max - min) + min;
-}
-
-function drawRaggedEdgeSquare(ctx, x, y, squareSize) {
-    ctx.beginPath();
-    const edgeVariance = 2; // Variousness of the ragged edge
-    const stepsPerSide = 60; // Number of steps to draw the ragged edge
-
-    ctx.strokeStyle = '#534953'; // Stone color
-    ctx.lineWidth = 1;
-
-    for (let side = 0; side < 4; side++) {
-        for (let step = 0; step < stepsPerSide; step++) {
-            let pointX, pointY;
-
-            switch (side) {
-                case 0: // Upper edge
-                    pointX = x + (squareSize / stepsPerSide) * step;
-                    pointY = y + random(-edgeVariance / 2, edgeVariance / 2);
-                    break;
-                case 1: // Right edge
-                    pointX = x + squareSize + random(-edgeVariance / 2, edgeVariance / 2);
-                    pointY = y + (squareSize / stepsPerSide) * step;
-                    break;
-                case 2: // Bottom edge
-                    pointX = x + squareSize - (squareSize / stepsPerSide) * step;
-                    pointY = y + squareSize + random(-edgeVariance / 2, edgeVariance / 2);
-                    break;
-                case 3: // Left edge
-                    pointX = x + random(-edgeVariance / 2, edgeVariance / 2);
-                    pointY = y + squareSize - (squareSize / stepsPerSide) * step;
-                    break;
-            }
-
-            if (side === 0 && step === 0) {
-                ctx.moveTo(pointX, pointY);
-            } else {
-                ctx.lineTo(pointX, pointY);
-            }
-        }
-    }
-
-    ctx.closePath();
-    ctx.stroke();
 }
 
 let lightPositions = [];
