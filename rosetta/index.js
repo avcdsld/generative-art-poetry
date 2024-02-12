@@ -1,3 +1,15 @@
+/*
+ * Rosetta
+ * Author: Ara
+ * License: This project is provided under the MIT License. See the LICENSE.MD file for more details.
+ *
+ * This project includes the following external components:
+ * - fxhash.min.js: Created by fxhash, provided under the MIT License.
+ * - Noto Serif JP font: Provided under the SIL Open Font License 1.1.
+ *
+ * Please refer to the respective license terms of each external component.
+ */
+
 const canvas0 = document.createElement('canvas');
 const ctx = canvas0.getContext('2d');
 canvas0.id = 'canvas0';
