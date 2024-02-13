@@ -334,7 +334,7 @@ window.addEventListener('resize', draw);
 window.onload = (event) => {
     font.load().then(function(loadedFont) {
         document.fonts.add(loadedFont);
-        poemParams.poemIndex = (getTokenNumber() % shuffledPoems.length) - 1;
+        poemParams.poemIndex = getTokenNumber() % shuffledPoems.length;
         draw();
     });
 };
