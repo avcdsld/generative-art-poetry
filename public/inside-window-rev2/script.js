@@ -87,17 +87,10 @@ codeBoxDiv.id = 'codeBox';
 codeBoxContainerDiv.appendChild(codeBoxDiv);
 document.body.appendChild(codeBoxContainerDiv);
 
-// const svgContent = `<svg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'>
-// <filter id='noiseFilter'>
-//   <feTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='20' stitchTiles='stitch'/>
-// </filter>
-// <rect width='100%' height='100%' filter='url(#noiseFilter)'/>
-// </svg>`;
-// const cssBackground = `background: linear-gradient(to right, black, transparent), url('data:image/svg+xml;base64,${btoa(svgContent)}');`;
-// document.body.style = cssBackground;
-
 let windowScale = window.innerWidth / 1000;
 let colorIndex;
+let fontForCodeIndex;
+let drawFinished = false;
 
 function init() {
   $fx.rand.reset();
@@ -105,15 +98,17 @@ function init() {
   colorIndex = Math.floor(random() * colors.length);
 
   windowScale = window.innerWidth / 1000;
-  const fontForCodeIndex = Math.floor(random() * fontsForCode.length);
+  fontForCodeIndex = Math.floor(random() * fontsForCode.length);
   codeBoxDiv.style.fontFamily = fontsForCode[fontForCodeIndex];
   codeBoxDiv.style.fontSize = `${Math.floor(windowScale * fontSizesForCode[fontForCodeIndex])}px`;
-  // codeBoxDiv.style.border = `${1 * windowScale}px solid rgba(255, 255, 255, 0.2)`;
   codeBoxDiv.style.padding = `${20 * windowScale}px`;
   //codeBoxDiv.style.filter = `blur(${1 * windowScale}px)`;
 
   codeBoxDiv.style.color = colors[colorIndex].accent;
   codeBoxDiv.style.backgroundColor = colors[colorIndex].bg;
+  // codeBoxDiv.style.border = `${2 * windowScale}px solid ${colors[colorIndex].accent}`;
+
+  drawFinished = false;
 }
 
 async function draw() {
@@ -122,15 +117,54 @@ async function draw() {
   const funcs = props.filter(p => typeof window[p] === 'function')
   const func = funcs[Math.floor($fx.rand() * funcs.length)]
 
-  codeBoxDiv.innerHTML = `try {
+  let codeText = `try {
   const props = Object.getOwnPropertyNames(window)
   const funcs = props.filter(p => typeof window[p] === 'function')
   const func = funcs[Math.floor($fx.rand() * funcs.length)]
   window[func]()
   // window.${func}()
-} catch (e) {                                         
+} catch (e) {
   e.message
 }`;
+
+  const codeSpan = document.createElement('span');
+  codeBoxDiv.appendChild(codeSpan);
+
+  const cursorElement = document.createElement('span');
+  cursorElement.textContent = '|';
+  cursorElement.style.fontFamily = 'VT323';
+  cursorElement.style.fontSize = `${Math.floor(windowScale * fontSizesForCode[fontForCodeIndex] * 1.5)}px`;
+  if (!drawFinished) {
+    codeBoxDiv.appendChild(cursorElement);
+  }
+
+  let codeIndex = 0;
+  let cursorVisible = true;
+
+  function toggleCursor() {
+    cursorVisible = !cursorVisible;
+    cursorElement.style.visibility = cursorVisible ? 'visible' : 'hidden';
+  }
+
+  function printNextChar() {
+    if (drawFinished) {
+      return;
+    }
+    codeSpan.innerHTML += codeText[codeIndex];
+    
+    codeIndex++;
+    if (codeIndex < codeText.length) {
+      const randomDelay = Math.floor(Math.random() * 80) + 50;
+      setTimeout(printNextChar, randomDelay);
+    } else {
+      drawFinished = true;
+      $fx.preview();
+      const cursorInterval = setInterval(toggleCursor, 500);
+      // clearInterval(cursorInterval);
+    }
+  }
+
+  printNextChar();
 
   $fx.rand.reset(); // WISYWIG
 
@@ -149,8 +183,8 @@ async function draw() {
     }
   }
   
-  const maxFontSize = 12 * windowScale;
-  const minFontSize = 6 * windowScale;
+  const maxFontSize = 10 * windowScale;
+  const minFontSize = 5 * windowScale;
   const fontSize = Math.floor(random() * (maxFontSize - minFontSize + 1)) + minFontSize;
   const fontFamily = fonts[Math.floor(random() * fonts.length)];
   const stepY = fontSize;
@@ -193,21 +227,10 @@ async function draw() {
     wrapper.style.color = textColor;
     wrapper.style.backgroundColor = bgColor;
 
-    // wrapper.addEventListener('click', function() {
-    //   if (scrollingText.style.animation == '') {
-    //     const speedSec = 60 + random() * 560;
-    //     scrollingText.style.animation = `loop ${speedSec}s linear infinite`;
-    //     scrollingText2.style.animation = `loop ${speedSec}s -${speedSec/2}s linear infinite`;
-    //   } else {
-    //     scrollingText.style.animation = '';
-    //     scrollingText2.style.animation = '';
-    //   }
-    // });
-
     document.body.appendChild(wrapper);
   }
 
-  $fx.preview();
+  // $fx.preview();
 }
 
 function textWidth(text, fontSize) {
@@ -229,7 +252,14 @@ function random() {
   return $fx.rand();
 }
 
-window.addEventListener('resize', draw);
+window.addEventListener('resize', () => {
+  console.log({drawFinished})
+  if (!drawFinished) {
+    return;
+  }
+  drawFinished = false;
+  draw();
+});
 
 window.onload = _event => {
   draw();
