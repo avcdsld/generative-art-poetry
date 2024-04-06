@@ -138,7 +138,7 @@ async function draw() {
   const cursorElement = document.createElement('span');
   cursorElement.textContent = '|';
   cursorElement.style.fontFamily = 'VT323';
-  cursorElement.style.fontSize = `${Math.floor(windowScale * fontSizesForCode[fontForCodeIndex] * 1.3)}px`;
+  cursorElement.style.fontSize = `${Math.floor(windowScale * fontSizesForCode[fontForCodeIndex] * 1.5)}px`;
   cursorElement.style.lineHeight = `${fontSizesForCode[fontForCodeIndex]}px`;
   if (!drawFinished) {
     codeBoxDiv.appendChild(cursorElement);
@@ -189,9 +189,9 @@ async function draw() {
         setTimeout(printNextChar, randomDelay);
       } else {
         drawFinished = true;
-        // setTimeout(drawBackgroundText, 500); // TODO:
+        setTimeout(drawBackgroundText, 500); // TODO:
   
-        $fx.preview();
+        // $fx.preview();
         cursorInterval = setInterval(toggleCursor, 500);
         // clearInterval(cursorInterval);
       }
@@ -297,10 +297,10 @@ async function draw() {
       }
     }
 
-    // $fx.preview();
+    $fx.preview();
   }
 
-  drawBackgroundText();
+  // drawBackgroundText();
 
   // $fx.preview();
 }

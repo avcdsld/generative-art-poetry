@@ -5,15 +5,28 @@
  *
  * This project includes the following external components:
  * - fxhash.min.js: Created by fxhash, provided under the MIT License.
- * - Source Code Pro font: Provided under the SIL Open Font License 1.1.
+ * - Google Fonts: Provided under the SIL Open Font License 1.1.
  *
  * Please refer to the respective license terms of each external component.
  */
 
 @font-face {
     font-family: 'Source Code Pro';
-    src: url('SourceCodePro-Regular.ttf');
+    src: url('fonts/SourceCodePro-Regular.ttf');
 }
+@font-face {
+    font-family: 'Xanh Mono';
+    src: url('fonts/XanhMono-Regular.ttf');
+}
+@font-face {
+    font-family: 'VT323';
+    src: url('fonts/VT323-Regular.ttf');
+}
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('fonts/CourierPrime-Regular.ttf');
+}
+
 body, html {
     margin: 0;
     padding: 0;
@@ -22,32 +35,14 @@ body, html {
     background-color: black;
     color: rgba(255, 193, 7, 0.66);
     font-family: 'Source Code Pro', monospace;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
-
     position: relative;
     overflow: hidden;
-}
-#background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    filter: blur(0.07rem);
-
-    font-family: 'Source Code Pro', monospace;
-    font-size: 16px;
-    white-space: pre;
 }
 #codeBoxContainer {
     position: absolute;
     overflow: hidden;
     width: 100%;
     height: 100%;
-    
     width: 100%;
     display: flex;
     justify-content: center;
@@ -57,50 +52,25 @@ body, html {
     position: absolute;
     max-width: 90%;
     max-height: 50%;
-    background-color: rgba(30, 30, 30, 0.8);
+    background-color: rgba(30, 30, 30, 1.0);
     color: white;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
     z-index: 2;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    filter: blur(0.05rem);
-
-    font-family: 'Source Code Pro', monospace;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.wrapper{
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 100%;
-
-    z-index: 1;
-    filter: blur(0.07rem);
-
-    font-family: 'Source Code Pro', monospace;
-    font-size: 16px;
     white-space: pre;
 }
-.loop {
+
+.wrapper {
+    position:absolute;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 150%;
+    z-index: 1;
+    white-space: pre;
+}
+.wrapper p {
     margin: 0;
     display: inline-block;
-    /* animation: loop 1800s linear infinite; */
-}
-.loop2 {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    /* animation: loop 1800s -900s linear infinite; */
-}
-@keyframes loop {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
+    z-index: 1;
 }
